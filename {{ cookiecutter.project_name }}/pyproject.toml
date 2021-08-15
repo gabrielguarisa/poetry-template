@@ -1,0 +1,96 @@
+{%- set license_classifiers = {
+    'MIT': 'License :: OSI Approved :: MIT License',
+    'BSD-3-Clause': 'License :: OSI Approved :: BSD License',
+    'ISC': 'License :: OSI Approved :: ISC License (ISCL)',
+    'Apache-2.0': 'License :: OSI Approved :: Apache Software License',
+    'GPL-3.0-only': 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+} -%}
+{%- set python_version_splitted = cookiecutter.minimal_python_version.split('.') | map('int') | list -%}
+[tool.poetry]
+name = "{{ cookiecutter.project_name }}"
+version = "{{ cookiecutter.version }}"
+description = "{{ cookiecutter.project_description }}"
+authors = ["{{ cookiecutter.author }} <{{ cookiecutter.email }}>"]
+license = "{{ cookiecutter.license }}"
+readme = "README.md"
+repository = "https://github.com/{{ cookiecutter.github_name }}/{{ cookiecutter.project_name }}"
+homepage = "https://github.com/{{ cookiecutter.github_name }}/{{ cookiecutter.project_name }}"
+
+# Keywords description https://python-poetry.org/docs/pyproject/#keywords
+keywords = [] #! Update me
+
+# Pypi classifiers: https://pypi.org/classifiers/
+classifiers = [  #! Update me
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "{{ license_classifiers[cookiecutter.license] }}",
+  "Programming Language :: Python :: 3",
+  {%- for minor_version in cookiecutter._all_python_minor_version if minor_version >= python_version_splitted[1] %}
+  "Programming Language :: Python :: 3.{{ minor_version }}",{% endfor %}
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^{{ cookiecutter.minimal_python_version }}"
+{% if cookiecutter.minimal_python_version == '3.7' -%}importlib_metadata = {version = "^4.5.0", python = "<3.8"}{%- endif %}
+
+[tool.poetry.dev-dependencies]
+black = { version = "^21.7b0", allow-prereleases = true }
+isort = { extras = ["colors"], version = "^5.9.3" }
+pre-commit = "^2.13.0"
+pytest = "^6.2.4"
+pytest-cov = "^2.12.1"
+pyupgrade = "^2.23.1"
+
+[tool.black]
+# https://github.com/psf/black
+target-version = ["py{{ cookiecutter.minimal_python_version.replace('.', '') }}"]
+line-length = {{ cookiecutter.line_length }}
+color = true
+
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | env
+    | venv
+)/
+'''
+
+[tool.isort]
+# https://github.com/timothycrosley/isort/
+py_version = {{ cookiecutter.minimal_python_version.replace('.', '') }}
+line_length = {{ cookiecutter.line_length }}
+
+known_typing = [
+  "typing",
+  "types",
+  "typing_extensions",
+  "mypy",
+  "mypy_extensions",
+]
+sections = [
+  "FUTURE",
+  "TYPING",
+  "STDLIB",
+  "THIRDPARTY",
+  "FIRSTPARTY",
+  "LOCALFOLDER",
+]
+include_trailing_comma = true
+profile = "black"
+multi_line_output = 3
+indent = 4
+color_output = true
