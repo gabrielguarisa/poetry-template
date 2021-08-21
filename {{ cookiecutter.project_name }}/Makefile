@@ -30,6 +30,10 @@ check-codestyle:
 
 check-formatting: check-codestyle
 
+.PHONY: test
+test:
+	poetry run pytest --cov-report term-missing --cov={{ cookiecutter.project_name }} tests/
+
 .PHONY: lint
 lint: test check-codestyle
 
