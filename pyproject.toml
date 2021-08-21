@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetry-template"
-version = "0.1.0"
+version = "0.2.0"
 description = "A python project template using poetry and a few useful features"
 authors = ["Gabriel Guarisa <gabrielguarisa@gmail.com>"]
 license = "MIT"
